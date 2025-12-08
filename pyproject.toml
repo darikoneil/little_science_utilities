@@ -35,6 +35,12 @@ classifiers = [
 
 
 dependencies = [
+    "colorcet",
+    "cmocean",
+    "matplotlib",
+    "pandas",
+    "polars",
+    "tabulate",
 ]
 
 
@@ -44,8 +50,8 @@ dependencies = [
 
 
 [project.urls]
-documentation = "https://github.com/darikoneil/{{ project_name }}"
-repository = "https://github.com/darikoneil/{{ project_name }}"
+documentation = "https://github.com/darikoneil/little_science_utilities"
+repository = "https://github.com/darikoneil/little_science_utilities"
 
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,11 +88,11 @@ docs = [
     "sphinx-rtd-theme"
 ]
 dev = [
-    "{{ project_name }}[tes]",
-    "{{ project_name }}[lint]",
-    "{{ project_name }}[cov]",
-    "{{ project_name }}[docs]",
-    "{{ project_name }}[prod]",
+    "little_science_utilities[tes]",
+    "little_science_utilities[lint]",
+    "little_science_utilities[cov]",
+    "little_science_utilities[docs]",
+    "little_science_utilities[prod]",
 ]
 
 
@@ -97,7 +103,7 @@ dev = [
 
 [tool.setuptools]
 packages = [
-    "{{ project_name }}",
+    "little_science_utilities",
 ]
 
 
@@ -241,9 +247,9 @@ allow-star-arg-any = true
 [tool.ruff.lint.flake8-boolean-trap]
 extend-allowed-calls = ["pydantic.Field", ]
 
-[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+#[tool.ruff.lint.flake8-import-conventions.extend-aliases]
 # Declare the default aliases.
-...
+#...
 
 #///////////////////////////////////////////////////////////////////////////////////////
 #// FORMATTING CONFIGURATION (RUFF)
@@ -259,9 +265,9 @@ docstring-code-format = true  # Auto-formatting of code examples in docstrings
 docstring-code-line-length = "dynamic"  # Line length for code examples in docstrings
 
 [tool.uv.sources]
-{{ project_name } = { workspace = true }
+little_science_utilities = { workspace = true }
 
 [dependency-groups]
 dev = [
-    "{{ project_name }}[dev]",
+    "little_science_utilities[dev]",
 ]
