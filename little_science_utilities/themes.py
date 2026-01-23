@@ -153,6 +153,8 @@ class ColorRegistry(Enum):
     PINK = Color(255 / 255, 162 / 255, 169 / 255)
     WHITE = Color(1, 1, 1)
     INVISIBLE = Color(0, 0, 0, 0)
+    LIGHT_GREEN = Color(174 / 255, 215 / 255, 174 / 255)
+    DARK_BLUE = Color(0 / 255, 104 / 255, 138 / 255)
 
     def __call__(self, *args, **kwargs) -> Color:  # noqa: ARG002
         return self.value
