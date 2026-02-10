@@ -7,7 +7,7 @@ from typing import Any
 import polars as pl
 try:
     import pandas as pd
-except Import Error:
+except ImportError:
     pd = pl
 
 from matplotlib import pyplot as plt
@@ -147,10 +147,6 @@ class ScienceLogger:
 
         self.directory = directory if directory else _BASE_DIRECTORY
         self.directory = self.directory.joinpath(self.name)
-        if not self.directory.exists():
-            self.directory.mkdir(parents=True, exist_ok=True)
-        assert self.directory.is_dir(), f"{self.directory} is not a directory."
-
         self.logger = logging.getLogger(name)
         self.logger.setLevel(self._LOG_LEVEL)
 
@@ -163,9 +159,14 @@ class ScienceLogger:
             self._console_handler.setFormatter(ScienceConsoleFormatter())
             self.logger.addHandler(self._console_handler)
 
-        if any(
-                (option % 2 == 0)  for option in (self._STATISTICS, self._INTEGRITY)
-        ):
+        if any((option % 2 == 0) for option in (self._STATISTICS, self._INTEGRITY)):
+            
+            if not self.directory.exists():
+                self.directory.mkdir(parents=True, exist_ok=True)
+            assert self.directory.is_dir(), f"{self.directory} is not a directory."
+            if not self.figures_directory.exists():
+                self.figures_directory.mkdir(parents=True, exist_ok=True)
+                
             if not self.log_file.exists():
                 with self.log_file.open("w") as f:
                     f.write("")
@@ -194,11 +195,11 @@ class ScienceLogger:
     @property
     def timestamp(self) -> str:
         return datetime.now().strftime("%d-%m-%Y %H:%M")
-    
+
     @property
     def plot(self) -> bool:
         return self._FIGURES >= Options.SAVE
-    
+
     def find_data(self, data_name: str) -> Path | None:
         """
         Find a data file in the directory.
@@ -218,7 +219,7 @@ class ScienceLogger:
         return matches.pop()
 
     def figure(self, fig: plt.Figure, name: str) -> None:
-        if self._FIGURES >= Options.SAVE:
+        if self._FIGURES % 2 == 0:
             set_export_text_type()
             path = self.figures_directory.joinpath(f"{name}.pdf")
             export_for_pub(fig, path)
