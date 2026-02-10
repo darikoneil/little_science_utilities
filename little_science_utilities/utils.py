@@ -4,11 +4,14 @@ from os import PathLike, getenv
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
 import polars as pl
+try:
+    import pandas as pd
+except ImportError:
+    pd = pl
 from matplotlib import pyplot as plt
 from tabulate import tabulate
-
+from datetime import datetime
 from little_science_utilities.themes import export_for_pub, set_export_text_type
 
 
@@ -69,36 +72,7 @@ class ListEnum(Enum):
         return f"{self.__class__.__name__}({self.value})"
 
 
-try:
-    _BASE_DIRECTORY = Path(getenv("THESIS_BASE_DIRECTORY"))
-except TypeError:
-    _BASE_DIRECTORY = Path(R"Z:\My Drive\thesis")
-
-
-class Directories(dict):
-    """
-    Class to hold directory paths for different data types.
-    """
-
-    def __init__(self, folder: str, base_directory: Path | None = None):
-        base_directory = base_directory if base_directory else _BASE_DIRECTORY
-
-        self._folder = folder
-        self._base_directory = base_directory
-
-        data = self._base_directory.joinpath("data", folder)
-        figures = self._base_directory.joinpath("figures", folder)
-        stats = self._base_directory.joinpath("stats", folder)
-
-        for folder_ in (data, figures, stats):
-            folder_.mkdir(parents=True, exist_ok=True)
-
-        dict.__init__(
-            self,
-            data=base_directory.joinpath("data", folder),
-            figures=base_directory.joinpath("figures", folder),
-            stats=base_directory.joinpath("stats", folder),
-        )
+_BASE_DIRECTORY = Path.cwd()
 
 
 def statistics_table_to_file(
@@ -161,7 +135,7 @@ class ScienceLogger:
     ):
         self._HEADER = "|" + "=" * (self._LINE_LENGTH - 2) + "|"
         self._SUBHEADER = "|" + "-" * (self._LINE_LENGTH - 2) + "|"
-        self._DEMARCATOR = "-" * self._LINE_LENGTH
+        self._DEMARCATOR = "" * self._LINE_LENGTH
 
         self._FIGURES = Options(figures)
         self._STATISTICS = Options(statistics)
@@ -170,8 +144,10 @@ class ScienceLogger:
         self.name = name
 
         self.directory = directory if directory else _BASE_DIRECTORY
-        assert self.directory.is_dir()
-        assert self.directory.exists()
+        self.directory = self.directory.joinpath(self.name)
+        if not self.directory.exists():
+            self.directory.mkdir(parents=True, exist_ok=True)
+        assert self.directory.is_dir(), f"{self.directory} is not a directory."
 
         self.logger = logging.getLogger(name)
         self.logger.setLevel(self._LOG_LEVEL)
@@ -188,28 +164,34 @@ class ScienceLogger:
         if any(
             option >= Options.SAVE for option in (self._STATISTICS, self._INTEGRITY)
         ):
-            if not self.stats_file.exists():
-                with self.stats_file.open("w") as f:
+            if not self.log_file.exists():
+                with self.log_file.open("w") as f:
                     f.write("")
 
             self._file_handler = logging.FileHandler(
-                self.stats_file, mode="a", encoding="utf-8"
+                self.log_file, mode="a", encoding="utf-8"
             )
             self._file_handler.setLevel(self._LOG_LEVEL)
             self._file_handler.setFormatter(logging.Formatter("%(message)s"))
             self.logger.addHandler(self._file_handler)
 
+        self._head(f"{self.name}")
+
     @property
     def data_directory(self) -> Path:
-        return self.directory.joinpath(self.name, "data")
+        return self.directory.joinpath("data")
 
     @property
     def figures_directory(self) -> Path:
-        return self.directory.joinpath(self.name, "figures")
+        return self.directory.joinpath("figures")
 
     @property
-    def stats_file(self) -> Path:
-        return self.directory.joinpath(self.name, "stats", f"{self.name}_stats.txt")
+    def log_file(self) -> Path:
+        return self.directory.joinpath(f"{self.name}_log.txt")
+
+    @property
+    def timestamp(self) -> str:
+        return datetime.now().strftime("%d-%m-%Y %H:%M")
 
     def find_data(self, data_name: str) -> Path | None:
         """
@@ -259,16 +241,16 @@ class ScienceLogger:
         msg = f"{self._DEMARCATOR}\n{message}\n{self._DEMARCATOR}"
         self.logger.info(msg)
 
-    def head(self, message: str) -> None:
+    def _head(self, message: str) -> None:
         """
         Log a header message to the console and stats file.
         """
-        header_message = f"{self._HEADER}\n{message}\n{self._HEADER}"
+        header_message = f"{self._HEADER}\n{message}: Accessed {self.timestamp}\n{self._HEADER}\n"
         self.logger.info(header_message)
 
     def subhead(self, message: str) -> None:
         """
         Log a subheader message to the console and stats file.
         """
-        subhead_message = f"{self._SUBHEADER}\n{message}\n{self._SUBHEADER}"
+        subhead_message = f"{self._SUBHEADER}\n{message}: {self.timestamp}\n{self._SUBHEADER}"
         self.logger.info(subhead_message)
