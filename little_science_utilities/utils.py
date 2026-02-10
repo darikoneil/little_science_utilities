@@ -4,8 +4,12 @@ from os import PathLike, getenv
 from pathlib import Path
 from typing import Any
 
-import pandas as pd
 import polars as pl
+try:
+    import pandas as pd
+except Import Error:
+    pd = pl
+
 from matplotlib import pyplot as plt
 from tabulate import tabulate
 from datetime import datetime
@@ -190,7 +194,11 @@ class ScienceLogger:
     @property
     def timestamp(self) -> str:
         return datetime.now().strftime("%d-%m-%Y %H:%M")
-
+    
+    @property
+    def plot(self) -> bool:
+        return self._FIGURES >= Options.SAVE
+    
     def find_data(self, data_name: str) -> Path | None:
         """
         Find a data file in the directory.
