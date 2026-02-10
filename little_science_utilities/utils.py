@@ -4,11 +4,8 @@ from os import PathLike, getenv
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
 import polars as pl
-try:
-    import pandas as pd
-except ImportError:
-    pd = pl
 from matplotlib import pyplot as plt
 from tabulate import tabulate
 from datetime import datetime
@@ -92,9 +89,10 @@ def statistics_table_to_file(
 
 
 class Options(IntEnum):
-    SKIP = 0
-    SHOW = 1
+    SKIP = 1
     SAVE = 2
+    SHOW = 3
+    ALL = 4
 
 
 class ScienceConsoleFormatter(logging.Formatter):
@@ -154,7 +152,7 @@ class ScienceLogger:
 
         if any(
             option >= Options.SHOW
-            for option in (self._FIGURES, self._STATISTICS, self._INTEGRITY)
+            for option in (self._STATISTICS, self._INTEGRITY)
         ):
             self._console_handler = logging.StreamHandler()
             self._console_handler.setLevel(self._LOG_LEVEL)
@@ -162,7 +160,7 @@ class ScienceLogger:
             self.logger.addHandler(self._console_handler)
 
         if any(
-            option >= Options.SAVE for option in (self._STATISTICS, self._INTEGRITY)
+                (option % 2 == 0)  for option in (self._STATISTICS, self._INTEGRITY)
         ):
             if not self.log_file.exists():
                 with self.log_file.open("w") as f:
