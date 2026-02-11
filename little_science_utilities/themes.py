@@ -204,6 +204,18 @@ class ColorScheme:
         return cls
 
 
+desaturated_colormap = LinearSegmentedColormap.from_list("desaturated_colormap", [
+    getattr(ColorRegistry, color).value for color in [
+        "DESATURATED_RED",
+        "DESATURATED_ORANGE",
+        "NOTEBOOK_YELLOW",
+        "DESATURATED_GREEN",
+        "DESATURATED_BLUE",
+        "DESATURATED_PURPLE"
+    ]
+])
+
+
 """
 ////////////////////////////////////////////////////////////////////////////////////////
 // STYLES
@@ -731,6 +743,87 @@ PUB_MAP: dict = {
     "axes.spines.right": True,
 }
 
+PC_GRID: dict = {
+    "figure.facecolor": "white",
+    "axes.grid": True,
+    "grid.linestyle": "-",
+    "grid.linewidth": 1.0,
+    "grid.color": (225 / 255, 225 / 255, 225 / 255),
+    "axes.linewidth": 1.0,
+    "lines.linewidth": 2.0,
+    "lines.solid_capstyle": "round",
+    "axes.facecolor": "white",
+    "xtick.major.size": 0,
+    "xtick.minor.size": 0,
+    "ytick.major.size": 0,
+    "ytick.minor.size": 0,
+    "axes.axisbelow": True,
+    "axes.spines.left": True,
+    "axes.spines.bottom": True,
+    "axes.spines.top": True,
+    "axes.spines.right": True,
+    "axes.xmargin": 0,
+    "axes.ymargin": 0.05,
+    "xtick.direction": "out",
+    "ytick.direction": "out",
+    "font.family": "sans-serif",
+    "font.sans-serif": [
+        "Arial",
+    ],
+    "mathtext.fontset": "dejavusans",
+}
+
+BIGGER_PUB_STYLE: dict = {
+    "axes.labelsize": 11,
+    "xtick.labelsize": 10,
+    "ytick.labelsize": 10,
+    "legend.fontsize": 10,
+    "font.size": 12,
+    "font.family": "sans-serif",
+    "font.sans-serif": [
+        "Arial",
+        "DejaVu Sans",
+        # "Arial",
+        "Helvetica",
+        "Lucida Grande",
+        "Verdana",
+        "Geneva",
+        "Lucid",
+        "Avant Garde",
+        "sans-serif",
+    ],
+    "mathtext.fontset": "dejavusans",
+    "axes.linewidth": 1.0,
+    "grid.linewidth": 1,
+    "lines.linewidth": 2.0,
+    "lines.markersize": 3,
+    # "savefig.bbox": "tight",
+    # "savefig.pad_inches": 0.01,
+    "xtick.direction": "out",
+    "xtick.major.size": 6.0,
+    "xtick.major.width": 1,
+    "xtick.minor.size": 3.0,
+    "xtick.minor.width": 1,
+    "xtick.minor.visible": True,
+    "xtick.top": False,
+    "ytick.direction": "out",
+    "ytick.major.size": 6.0,
+    "ytick.major.width": 1,
+    "ytick.minor.size": 3.0,
+    "ytick.minor.width": 1,
+    "ytick.minor.visible": True,
+    "ytick.right": False,
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "legend.frameon": False,
+}
+
+
+BIGGER_PUB_IMAGE_BOUNDS: dict = {
+    **BIGGER_PUB_STYLE,
+    "axes.spines.top": True,
+    "axes.spines.right": True,
+}
 
 class Styles:
     """
@@ -757,6 +850,9 @@ class Styles:
         "pub-image": PUB_IMAGE,
         "pub-image-bounds": PUB_IMAGE_BOUNDS,
         "pub-map": PUB_MAP,
+        "pc-grid": PC_GRID,
+        "big-pub": BIGGER_PUB_STYLE,
+        "big-pub-image-bounds": BIGGER_PUB_IMAGE_BOUNDS,
     }
 
     def __init__(self, *style: str):
