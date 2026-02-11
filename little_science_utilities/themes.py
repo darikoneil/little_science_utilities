@@ -204,16 +204,35 @@ class ColorScheme:
         return cls
 
 
-desaturated_colormap = LinearSegmentedColormap.from_list("desaturated_colormap", [
-    getattr(ColorRegistry, color).value for color in [
-        "DESATURATED_RED",
-        "DESATURATED_ORANGE",
-        "NOTEBOOK_YELLOW",
-        "DESATURATED_GREEN",
-        "DESATURATED_BLUE",
-        "DESATURATED_PURPLE"
-    ]
-])
+desaturated_colormap = LinearSegmentedColormap.from_list(
+    "desaturated_colormap",
+    [
+        getattr(ColorRegistry, color).value
+        for color in [
+            "DESATURATED_PURPLE",
+            "DESATURATED_BLUE",
+            "DESATURATED_GREEN",
+            "NOTEBOOK_YELLOW",
+            "DESATURATED_ORANGE",
+            "DESATURATED_RED",
+        ]
+    ],
+)
+
+desaturated_colormap_r = LinearSegmentedColormap.from_list(
+    "desaturated_colormap_r",
+    [
+        getattr(ColorRegistry, color).value
+        for color in [
+            "DESATURATED_RED",
+            "DESATURATED_ORANGE",
+            "NOTEBOOK_YELLOW",
+            "DESATURATED_GREEN",
+            "DESATURATED_BLUE",
+            "DESATURATED_PURPLE",
+        ]
+    ],
+)
 
 
 """
