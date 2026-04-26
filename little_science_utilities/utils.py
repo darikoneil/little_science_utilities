@@ -166,6 +166,8 @@ class ScienceLogger:
             assert self.directory.is_dir(), f"{self.directory} is not a directory."
             if not self.figures_directory.exists():
                 self.figures_directory.mkdir(parents=True, exist_ok=True)
+            if not self.data_directory.exists():
+                self.data_directory.mkdir(parents=True, exist_ok=True)
                 
             if not self.log_file.exists():
                 with self.log_file.open("w") as f:
