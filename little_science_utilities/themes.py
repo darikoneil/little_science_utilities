@@ -43,7 +43,23 @@ def set_export_text_type() -> None:
     mpl.rcParams["font.family"] = "sans-serif"
     mpl.rcParams["font.sans-serif"] = ["Arial"]
 
+def export_for_review(fig: plt.Figure, path: Path, **kwargs: Any) -> None:
+    """
+    Export a figure for review
 
+    :param fig: The figure to export.
+    :type fig: plt.Figure
+    :param path: The path to save the figure to.
+    :type path: Path
+    :param kwargs: Additional keyword arguments for ``fig.savefig``.
+    :type kwargs: Any
+    :returns: None
+    :rtype: None
+    """
+    if path.suffix != ".png":
+        path = path.with_suffix(".png")
+    fig.savefig(path, **kwargs)
+    
 def export_for_pub(fig: plt.Figure, path: Path, **kwargs: Any) -> None:
     """
     Export a figure for publication.
