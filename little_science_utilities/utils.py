@@ -228,7 +228,7 @@ class ScienceLogger:
             msg = f"Figure saved to {path}"
             path = path.with_suffix(".png")
             export_for_review(fig, path)
-            msg += f"Figure saved to {path}"
+            msg += f"\nFigure saved to {path}"
             self.logger.info(msg)
 
     def stats(self, message: str | pl.DataFrame | pd.DataFrame) -> None:
