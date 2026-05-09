@@ -13,7 +13,7 @@ except ImportError:
 from matplotlib import pyplot as plt
 from tabulate import tabulate
 from datetime import datetime
-from little_science_utilities.themes import export_for_pub, set_export_text_type
+from little_science_utilities.themes import export_for_pub, set_export_text_type, export_for_review
 
 
 class ListEnum(Enum):
@@ -200,7 +200,7 @@ class ScienceLogger:
 
     @property
     def plot(self) -> bool:
-        return self._FIGURES >= Options.SAVE
+        return self._FIGURES % 2 == 0
 
     def find_data(self, data_name: str) -> Path | None:
         """
@@ -226,6 +226,9 @@ class ScienceLogger:
             path = self.figures_directory.joinpath(f"{name}.pdf")
             export_for_pub(fig, path)
             msg = f"Figure saved to {path}"
+            path = path.with_suffix(".png")
+            export_for_review(fig, path)
+            msg += f"Figure saved to {path}"
             self.logger.info(msg)
 
     def stats(self, message: str | pl.DataFrame | pd.DataFrame) -> None:
